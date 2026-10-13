@@ -31,11 +31,9 @@
 // ================================================================
 == 先问一个问题 <touying:hidden>
 
-#v(1fr)
-#text(1.3em)[如果明天电脑坏了，\ 你能在一小时内把它*原样*恢复吗？]
-#v(.6em)
+#text(scale.lead)[如果明天电脑坏了，\ 你能在一小时内把它*原样*恢复吗？]
+
 #muted[装过的软件、改过的设置、调好的输入法 —— 全部。]
-#v(1fr)
 
 #speaker-note[
   停顿三秒，让大家想一想。大多数人的答案是“不能”，最多恢复个文件。
@@ -43,7 +41,7 @@
 
 == Windows：装得上，删不掉，复刻不了
 
-#slide(composer: (1fr, 1fr))[
+#slide(composer: side(1fr, 1fr))[
   - *删除难*：卸载后残留注册表、服务、驱动，流氓软件“卸了又回来” #pause
   - *恢复难*：系统状态 = 多年点击的累积，没有任何记录 #pause
   - *臃肿*：C 盘只增不减，后台常驻越来越多
@@ -61,7 +59,6 @@
 
 == Linux 发行版 = 内核 + 包管理 + 一套默认选择
 
-#set text(.85em)
 #table(
   columns: (auto, 1fr, 1fr, 1fr),
   [], [Ubuntu / Debian], [Arch], [#NixOS],
@@ -80,8 +77,8 @@
 
 #grid(
   columns: (1fr, auto, 1fr),
-  column-gutter: 1.2em,
-  align: horizon,
+  column-gutter: 2em,
+  align: left + horizon,
   [
     ```sh
     sudo apt install foo
@@ -91,10 +88,10 @@
     # ……三年后
     ```
   ],
-  text(1.6em, fill: palette.muted)[→],
+  text(scale.lead, fill: palette.muted)[→],
   [
-    #text(1.2em)[系统状态 = #alert[？]]
-    #v(.3em)
+    #text(scale.lead)[系统状态 = #alert[？]]
+
     #muted[没人记得改过什么，\ 也就没法复刻、没法干净地删除。]
   ],
 )
@@ -109,7 +106,7 @@
 
 == 声明式：整个系统写在一份文件里
 
-#slide(composer: (1.25fr, 1fr))[
+#slide(composer: side(1.25fr, 1fr))[
   ```nix
   { pkgs, ... }: {
     networking.hostName = "laptop";
@@ -143,12 +140,12 @@
 - `flake.lock` 锁定所有依赖的确切版本 #pause
 - 换一台电脑：`git clone` + 一条命令 → 一模一样的系统
 
-#v(.6em)
+#v(.5 * rhythm)
 #muted[我自己的三台机器（笔记本、台式机、机房）共用同一个仓库，只用开关区分差异。]
 
 == 原子升级，随时回滚
 
-#slide(composer: (1fr, 1fr))[
+#slide(composer: side(1fr, 1fr))[
   ```text
   NixOS
     Generation 214  (current)
@@ -190,7 +187,7 @@
   [换台机器], alert[再让 Agent 做一遍], [`git pull` 即可],
 )
 
-#v(.4em)
+#v(.5 * rhythm)
 #muted[人负责审查和决定，Agent 负责动手。]
 
 #speaker-note[
@@ -202,31 +199,37 @@
 #grid(
   columns: (1fr, auto, 1fr, auto, 1fr, auto, 1fr),
   align: center + horizon,
-  column-gutter: .5em,
+  column-gutter: .6em,
   ..{
     let step(n, title, desc) = block(
       width: 100%,
-      height: 5.2em,
-      inset: .7em,
+      height: 7em,
+      inset: (x: .4em, y: 1em),
       radius: 3pt,
       fill: palette.code,
-      [#text(.7em, fill: palette.light, font: font-body, n) \ *#title* \ #text(.6em, fill: palette.muted, desc)],
+      align(center + horizon, {
+        text(scale.caption, fill: palette.light, n)
+        v(.5em, weak: true)
+        text(scale.small, strong(title))
+        v(.6em, weak: true)
+        text(scale.caption, fill: palette.muted, desc)
+      }),
     )
     let arrow = text(fill: palette.muted)[→]
     (
-      step("01", "需求", "一句话或一个 patch"),
+      step("01", "需求", "一句话或 patch"),
       arrow,
       step("02", "Agent 改配置", "nixos-config 仓库"),
       arrow,
-      step("03", "我审查 diff", "jj diff / 求值检查"),
+      step("03", "我审查 diff", "jj diff"),
       arrow,
       step("04", "rebuild", "不行就回滚"),
     )
   },
 )
 
-#v(1em)
-#muted[git 历史里的每一次提交，几乎都是这样完成的。]
+#v(rhythm)
+#align(center, muted[git 历史里的每一次提交，几乎都是这样完成的。])
 
 #speaker-note[
   举一个最近的例子：想试一个新功能，就把上游的 patch 发给 Agent，它负责接进配置。
@@ -252,11 +255,10 @@
 // ---------------- 案例一 ----------------
 == 案例一：让 Agent 操作我的电脑
 
-#slide(composer: (1fr, 1fr))[
+#slide(composer: side(1fr, 1fr))[
   *目标*：在 Niri 窗口管理器上实现 Computer Use
 
-  #v(.4em)
-  #set text(.85em)
+  #set text(scale.small)
   + 给 Niri 打 patch：IPC 暴露窗口坐标、截图
   + patch 越积越多：8 个文件、1200+ 行
   + 整体抽成独立 flake，别人也能直接复用
@@ -303,7 +305,7 @@ programs.codexComputerUse = {
 ]
 
 #focus-slide[
-  #text(.8em, font: font-body)[`$` live demo]
+  #text(scale.small)[`$ live demo`]
 
   让 Agent 操作这台电脑
 ]
@@ -317,20 +319,15 @@ programs.codexComputerUse = {
 // ---------------- 案例二 ----------------
 == 案例二：把手机输入法搬到 Linux
 
-#slide(composer: (1fr, 1fr))[
-  官方只有 *Android APK*。Agent 做了这些事：
+#slide(composer: side(1fr, 1fr))[
+  *起点*：官方只有 Android APK
 
-  #set text(.85em)
-  - 拉取 Android NDK 与系统镜像，提取 bionic 运行时
-  - 解包 APK，补齐 Nix 运行库
-  - 打上自己的补丁：小鹤双拼、云延迟
-  - 写成一个 Nix 包
+  #set text(scale.small)
+  + 拉取 Android NDK 与系统镜像，提取 bionic 运行时
+  + 解包 APK，补齐 Nix 运行库，打上小鹤双拼补丁
+  + 写成 Nix 包：`nix profile install .#vtype-linux`
 ][
-  ```sh
-  nix profile install .#vtype-linux
-  ```
-  #v(.6em)
-  #muted[另一台机器？同一条命令。]
+  #placeholder(height: 9em)[截图：微信输入法在 Linux 上的候选框]
 ]
 
 #speaker-note[
@@ -363,29 +360,27 @@ programs.codexComputerUse = {
 - *虚拟机*：装一个 #NixOS，把配置交给 Agent 慢慢改
 - *资料*：见最后的参考资料页
 
-#v(.8em)
+#v(.5 * rhythm)
 #muted[第一句提示词可以是：“帮我把这台电脑的配置写成 NixOS。”]
 
 == 回顾
 
-#v(1fr)
-#set text(1.15em)
-+ *系统即代码* —— 删除和恢复都只是改一份文件
-+ *可回滚的安全网* —— 改坏了随时退回上一代
-+ *Agent 来读写* —— 你负责想要什么，它负责做到
-#v(1fr)
+#text(scale.lead)[
+  + *系统即代码* —— 删除和恢复都只是改一份文件
+  + *可回滚的安全网* —— 改坏了随时退回上一代
+  + *Agent 来读写* —— 你负责想要什么，它负责做到
+]
 
 == 参考资料
 
 #let res(title, url, desc) = block(below: 1.1em, {
   set par(leading: .5em)
-  link(url, text(.75em, title))
+  link(url, text(scale.small, title))
   h(.5em)
-  text(.55em, fill: palette.muted, desc)
+  text(scale.caption, fill: palette.muted, desc)
   linebreak()
-  text(.5em, fill: palette.muted, url.trim("https://", at: start).trim("/", at: end).trim("/zh"))
+  text(scale.fine, fill: palette.muted, url.trim("https://", at: start).trim("/", at: end).trim("/zh"))
 })
-
 
 #grid(
   columns: (1.15fr, 1fr, 1fr),
@@ -421,8 +416,7 @@ programs.codexComputerUse = {
 ]
 
 #focus-slide[
-  Thanks
+  #text(size: 3em, weight: "light")[Thanks]
 
-  #v(.4em)
-  #text(.7em)[`$ nixos-rebuild switch --flake .#future`]
+  #text(scale.small)[`$ nixos-rebuild switch --flake .#future`]
 ]

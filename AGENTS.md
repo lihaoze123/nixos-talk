@@ -29,6 +29,9 @@ typst compile --input handout=true main.typ "out/s-{0p}.png" --ppi 60
 
 - 简洁、留白，不加多余装饰（横线、阴影、渐变、图标堆砌）。封面居中对称。
 - 颜色只用 `palette` 中的令牌，不在正文里写死色值。赭红 `palette.alert` 仅用于少量痛点强调。
+- 字号只用 `scale` 中的档位，间距以 `rhythm` 为基准；页面几何见 `geometry`。
+- 内容页标题由主题放在页眉，位置固定；正文自动垂直居中，不要手写 `#v(1fr)`。封面、章节页、强调页一律居中对称。
+- 两栏用 `#slide(composer: side(1fr, 1fr))[…][…]`，左右互相垂直居中。
 - 字体：西文 Fira Code；中文正文方正细黑一（`FZXiHeiI-Z08`）、标题方正黑体（`FZHei-B01`）、封面与海报标题方正小标宋（`FZXiaoBiaoSong-B05`）。使用系统字体，不打包字体文件。
 - `*strong*` 为主色强调；`#alert[...]` 为警示色。章节编号为 `0x01 / 0x04` 格式，需关闭 Fira Code 的 `calt` 连字。
 - 截图暂用 `placeholder(...)`，替换时改为 `image(...)` 并放入 `images/`。
@@ -38,7 +41,8 @@ typst compile --input handout=true main.typ "out/s-{0p}.png" --ppi 60
 - 版本固定为 `@preview/touying:0.8.0`。
 - 演讲者模式通过 `--input presenter=true` 启用 `show-notes-on-second-screen: right`；阅读版通过 `--input handout=true`。
 - `#speaker-note` 必须写在该页第一个 `#pause` 之前，否则只出现在最后一个子页。
-- `composer` 两栏页中的占位图需给定固定高度，避免溢出生成空白页。
+- 两栏页中的占位图需给定固定高度，避免溢出生成空白页。
+- 不要在页面顶层写 `#set text(...)`：touying 会把它带到后续所有页，字号逐页叠加。需要局部字号时用 `#text(size)[…]` 包住。
 
 ## 内容与隐私
 
