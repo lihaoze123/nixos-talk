@@ -1,0 +1,7 @@
+dist/
+out/
+result
+result-*
+.direnv/
+/*.pdf
+/*.png
