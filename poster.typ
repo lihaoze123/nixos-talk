@@ -16,11 +16,11 @@
 ]
 
 #v(.4em)
-#NixOS 是一个 *声明式* 的、*可复现* 的 Linux 发行版。
+#NixOS 是一个*声明式*的、*可复现*的 Linux 发行版。
 
 #text(1.1em)[
   整个系统 = 一份*代码*，\
-  而 AI Agent 最擅长 *读写代码*。
+  而 AI Agent 最擅长*读写代码*。
 ]
 
 #underline(offset: .25em, stroke: .5pt)[本讲座]包括以下内容：
@@ -37,7 +37,6 @@
   fill: palette.code,
   inset: (x: .9em, y: .7em),
   radius: 3pt,
-  stroke: (left: 2pt + palette.light),
   text(font: font-body, size: .8em)[
     #raw("programs.codexComputerUse.enable = true;", lang: "nix")
   ],

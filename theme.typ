@@ -1,15 +1,17 @@
 // theme.typ —— 极简 touying 主题：米白底、Nix 蓝、Fira Code + 方正
 #import "@preview/touying:0.8.0": *
+#import "@preview/zebraw:0.5.5": zebraw, zebraw-init
 
 // ---------- 设计令牌 ----------
 #let palette = (
   bg: rgb("#F7F6F2"), // 暖米白，不用纯白
   ink: rgb("#1F2328"), // 正文墨色
-  muted: rgb("#8A8F98"), // 页眉页脚、注释
+  muted: rgb("#6E737B"), // 页眉页脚、注释；投影下对比度约 4.4:1
   primary: rgb("#3E5C8A"), // Nix 深蓝
-  light: rgb("#7EBAE4"), // Nix 浅蓝：章节编号、代码块左线、深色页强调
+  light: rgb("#7EBAE4"), // Nix 浅蓝：章节编号、深色页强调
   alert: rgb("#B5533C"), // 赭红，全场少量使用
   code: rgb("#EEEDE8"), // 代码块底色
+  mark: rgb("#DCE6F0"), // 代码高亮行
 )
 
 // 字号阶梯：全场只用这几档
@@ -20,7 +22,8 @@
   lead: 1.2em, // 引导句
   body: 1em,
   small: .8em, // 表格、注释、次要正文
-  code: .75em,
+  code: .75em, // 代码块
+  inline: .9em, // 行内代码，相对周围字号
   caption: .6em, // 页眉、页码、说明
   fine: .5em, // 网址等长串
 )
@@ -35,6 +38,19 @@
 #let font-heading = (latin, "FZHei-B01") // 方正黑体
 #let font-title = (latin, "FZXiaoBiaoSong-B05") // 方正小标宋，仅封面与海报
 
+// 代码块外框：上下留白、小圆角；zebraw 的高亮行仍能左右贴边
+#let code-frame(body) = block(
+  fill: palette.code,
+  inset: (y: .45em),
+  radius: 3pt,
+  clip: true,
+  width: 100%,
+  body,
+)
+
+// 高亮若干行的代码块：#code-hl(2, 3)[```nix ...```]
+#let code-hl(..lines, body) = code-frame(zebraw(highlight-lines: lines.pos(), body))
+
 // ---------- 全局排版 ----------
 #let base-style(body) = {
   set text(font: font-body, size: 22pt, fill: palette.ink, lang: "zh", region: "cn")
@@ -46,21 +62,25 @@
   show heading: set text(font: font-heading, weight: "semibold")
   show link: set text(fill: palette.primary)
 
-  // 代码：等宽 + 浅底，不加边框，左侧一条浅蓝细线
-  show raw: set text(font: (latin, "FZXiHeiI-Z08"), size: scale.code)
+  // 代码：等宽 + 浅底，不加边框；代码块交给 zebraw（支持 highlight-lines 高亮行）
+  show raw: set text(font: (latin, "FZXiHeiI-Z08"))
+  show raw.where(block: false): set text(size: scale.inline)
   show raw.where(block: false): box.with(
     fill: palette.code,
     inset: (x: .3em),
     outset: (y: .3em),
     radius: 2pt,
   )
-  show raw.where(block: true): block.with(
-    fill: palette.code,
-    inset: (x: 1em, y: .8em),
-    radius: 3pt,
-    width: 100%,
-    stroke: (left: 2pt + palette.light),
+  show raw.where(block: true): set text(size: scale.code)
+  show: zebraw-init.with(
+    numbering: false,
+    lang: false,
+    background-color: palette.code,
+    highlight-color: palette.mark,
+    inset: (top: .3em, bottom: .3em, left: 1em, right: 1em),
   )
+  show: zebraw
+  show raw.where(block: true): code-frame
 
   // 表格：只留横线
   set table(

@@ -34,6 +34,7 @@ typst compile --input handout=true main.typ "out/s-{0p}.png" --ppi 60
 - 两栏用 `#slide(composer: side(1fr, 1fr))[…][…]`，左右互相垂直居中。
 - 字体：西文 Fira Code；中文正文方正细黑一（`FZXiHeiI-Z08`）、标题方正黑体（`FZHei-B01`）、封面与海报标题方正小标宋（`FZXiaoBiaoSong-B05`）。使用系统字体，不打包字体文件。
 - `*strong*` 为主色强调；`#alert[...]` 为警示色。章节编号为 `0x01 / 0x04` 格式，需关闭 Fira Code 的 `calt` 连字。
+- 代码块由 `@preview/zebraw` 渲染（无行号、无左线）；需要强调某几行时用 `#code-hl(2, 3)[```nix …```]`。
 - 截图暂用 `placeholder(...)`，替换时改为 `image(...)` 并放入 `images/`。
 
 ## touying 注意事项
