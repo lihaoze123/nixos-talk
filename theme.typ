@@ -178,17 +178,14 @@
   touying-slide(self: self, config: config, body)
 })
 
-// 章节页：居中对称，极客风编号 0x02，下方小字进度 02 / 04
+// 章节页：居中对称，只有极客风编号 0x02 与章节名
 #let new-section-slide(config: (:), body) = touying-slide-wrapper(self => {
   let body = align(center + horizon, context {
-    let total = query(heading.where(level: 1)).filter(h => h.outlined).len()
     let n = query(heading.where(level: 1).before(here())).filter(h => h.outlined).len()
     stack(
       text(scale.section, weight: weight.light, fill: palette.accent, hex(n)),
-      v(.9em),
+      v(1.3em),
       text(scale.title * 1.2, weight: weight.heading, fill: palette.primary, utils.display-current-heading(level: 1)),
-      v(1.6em),
-      text(scale.caption, font: font-mono, fill: palette.muted, pad2(n) + " / " + pad2(total)),
     )
   })
   self = utils.merge-dicts(self, ceremony-page)

@@ -35,7 +35,7 @@ typst compile --input handout=true main.typ "out/s-{0p}.png" --ppi 60
 - 两栏用 `#slide(composer: side(1fr, 1fr))[…][…]`，左右互相垂直居中。
 - 字体：西文 Inter；中文思源黑体（`Source Han Sans SC`）；代码、章节编号、页码用 Fira Code（`font-mono`）。字重只用 `weight` 中的档位。使用系统字体，不打包字体文件。
 - 中文与西文之间不要手写空格，Typst 会自动补 1/4em 间距；例外：`#NixOS` 这类代码表达式后必须留空格，否则会和后面的汉字连成一个标识符。
-- `*strong*` 为主色强调；`#alert[...]` 为警示色。章节编号为 `0x01 / 0x04` 格式，需关闭 Fira Code 的 `calt` 连字。
+- `*strong*` 为主色强调；`#alert[...]` 为警示色。章节页只显示 `0x01` 编号与章节名，不再附进度，需关闭 Fira Code 的 `calt` 连字。
 - 代码块由 `@preview/zebraw` 渲染（无行号、无左线）；需要强调某几行时用 `#code-hl(2, 3)[```nix …```]`；单栏纯代码页用 `#code-lg[…]` 放大，放大后要渲染确认长行没有折行。
 - 截图暂用 `placeholder(...)`，替换时改为 `image(...)` 并放入 `images/`。
 
