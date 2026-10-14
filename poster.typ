@@ -5,8 +5,6 @@
 #set text(font: font-body, size: 13pt, fill: palette.ink, lang: "zh", region: "cn")
 #set par(leading: .8em, spacing: 1.2em)
 #show strong: set text(weight: weight.strong, fill: palette.primary)
-#set enum(numbering: n => text(fill: palette.primary, weight: weight.heading, str(n) + "."))
-#set list(marker: text(fill: palette.primary, sym.bullet))
 #show raw: set text(font: font-mono)
 
 #align(center)[
@@ -23,23 +21,22 @@
   而AI Agent最擅长*读写代码*。
 ]
 
-本讲座包括以下内容：
+从系统为什么越用越乱讲起，到让Agent维护你的系统，附现场演示。
 
-+ Linux与发行版：为什么系统越用越乱
-+ #NixOS：声明式、可复现、可回滚
-+ Agentic OS：让Agent维护你的系统
-  - Niri Computer Use现场演示
-  - 让Agent把软件打包进Nix
-+ 如何开始
-
+// 议程写成一份 NixOS 模块：每个选项对应一个观点，比逐条列章节更抽象
 #block(
   width: 100%,
   fill: palette.code,
-  inset: (x: .9em, y: .7em),
+  inset: (x: .9em, y: .8em),
   radius: 3pt,
-  text(size: .8em)[
-    #raw("programs.codexComputerUse.enable = true;", lang: "nix")
-  ],
+  text(size: .8em, raw(block: true, lang: "nix", ```
+services.nixosTalk = {
+  enable      = true;
+  declarative = true;    # 系统即代码
+  rollback    = true;    # 改坏了就回滚
+  maintainer  = "agent"; # 交给 AI 维护
+  liveDemo    = true;    # 现场演示
+};```.text)),
 )
 
 #v(1.4em)
