@@ -8,7 +8,7 @@
       forAll = f: nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (s: f nixpkgs.legacyPackages.${s});
     in
     {
-      # 字体（Fira Code、方正系列）使用系统已安装的字体
+      # 字体（Inter、思源黑体、Fira Code）使用系统已安装的字体
       devShells = forAll (pkgs: {
         default = pkgs.mkShell {
           packages = with pkgs; [ typst tinymist just pympress ];

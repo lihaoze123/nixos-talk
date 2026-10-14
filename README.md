@@ -30,10 +30,9 @@ just all        # 生成全部产物到 dist/
 
 字体使用系统已安装的版本，不随仓库分发：
 
-- 西文：Fira Code
-- 中文正文：方正细黑一（`FZXiHeiI-Z08`）
-- 中文标题：方正黑体（`FZHei-B01`）
-- 封面与海报标题：方正小标宋（`FZXiaoBiaoSong-B05`）
+- 西文：Inter
+- 中文：思源黑体（`Source Han Sans SC`），正文 Regular、标题 Medium、强调 Bold
+- 代码、章节编号、页码：Fira Code
 
 可用 `typst fonts` 确认是否已安装。
 

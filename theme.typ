@@ -1,4 +1,4 @@
-// theme.typ —— 极简 touying 主题：米白底、Nix 蓝、Fira Code + 方正
+// theme.typ —— 极简 touying 主题：米白底、Nix 蓝、Inter + 思源黑体，代码用 Fira Code
 #import "@preview/touying:0.8.0": *
 #import "@preview/zebraw:0.5.5": zebraw, zebraw-init
 
@@ -8,10 +8,11 @@
   ink: rgb("#1F2328"), // 正文墨色
   muted: rgb("#6E737B"), // 页眉页脚、注释；投影下对比度约 4.4:1
   primary: rgb("#3E5C8A"), // Nix 深蓝
-  light: rgb("#7EBAE4"), // Nix 浅蓝：章节编号、深色页强调
+  light: rgb("#7EBAE4"), // Nix 浅蓝：仅用于深色页强调
+  accent: rgb("#5277C3"), // Nix 中蓝：浅底上的章节编号，投影下仍可辨
   alert: rgb("#B5533C"), // 赭红，全场少量使用
   code: rgb("#EEEDE8"), // 代码块底色
-  mark: rgb("#DCE6F0"), // 代码高亮行
+  mark: rgb("#CCDCEC"), // 代码高亮行，与 code 底色拉开差距
 )
 
 // 字号阶梯：全场只用这几档
@@ -22,7 +23,8 @@
   lead: 1.2em, // 引导句
   body: 1em,
   small: .8em, // 表格、注释、次要正文
-  code: .75em, // 代码块
+  code: .85em, // 代码块
+  code-lg: .95em, // 单栏纯代码页
   inline: .9em, // 行内代码，相对周围字号
   caption: .6em, // 页眉、页码、说明
   fine: .5em, // 网址等长串
@@ -32,11 +34,11 @@
 // 页面几何（pt，避免 em 随字号漂移）
 #let geometry = (x: 58pt, top: 104pt, bottom: 48pt)
 
-// Fira Code 只负责西文；中文标点交给方正
-#let latin = (name: "Fira Code", covers: "latin-in-cjk")
-#let font-body = (latin, "FZXiHeiI-Z08") // 方正细黑一
-#let font-heading = (latin, "FZHei-B01") // 方正黑体
-#let font-title = (latin, "FZXiaoBiaoSong-B05") // 方正小标宋，仅封面与海报
+// 西文只负责拉丁字符，中文标点交给思源黑体；中西文间距由 Typst 自动补 1/4em，源码里不要手写空格
+#let cjk = "Source Han Sans SC" // 思源黑体：字重齐全，投影下比细黑更稳
+#let font-body = ((name: "Inter", covers: "latin-in-cjk"), cjk)
+#let font-mono = ((name: "Fira Code", covers: "latin-in-cjk"), cjk) // 代码、编号、页码
+#let weight = (light: 300, body: 400, heading: 500, strong: 700)
 
 // 代码块外框：上下留白、小圆角；zebraw 的高亮行仍能左右贴边
 #let code-frame(body) = block(
@@ -51,19 +53,23 @@
 // 高亮若干行的代码块：#code-hl(2, 3)[```nix ...```]
 #let code-hl(..lines, body) = code-frame(zebraw(highlight-lines: lines.pos(), body))
 
+// 单栏纯代码页放大代码：#code-lg[```nix ...```] 或 #code-lg(code-hl(2)[...])
+// 代码块字号以 em 叠加，故按 code-lg / code 的比例放大
+#let code-lg(body) = text(size: scale.code-lg / scale.code * 1em, body)
+
 // ---------- 全局排版 ----------
 #let base-style(body) = {
-  set text(font: font-body, size: 22pt, fill: palette.ink, lang: "zh", region: "cn")
+  set text(font: font-body, size: 22pt, weight: weight.body, fill: palette.ink, lang: "zh", region: "cn")
   set par(leading: .85em, spacing: rhythm, justify: false)
   set block(spacing: rhythm)
   set list(marker: text(fill: palette.primary, sym.bullet), indent: .2em, spacing: .8 * rhythm)
-  set enum(numbering: n => text(fill: palette.primary, font: font-heading, str(n) + "."), spacing: .8 * rhythm)
-  show strong: set text(font: font-heading, weight: "semibold", fill: palette.primary)
-  show heading: set text(font: font-heading, weight: "semibold")
+  set enum(numbering: n => text(fill: palette.primary, weight: weight.heading, str(n) + "."), spacing: .8 * rhythm)
+  show strong: set text(weight: weight.strong, fill: palette.primary)
+  show heading: set text(weight: weight.heading)
   show link: set text(fill: palette.primary)
 
   // 代码：等宽 + 浅底，不加边框；代码块交给 zebraw（支持 highlight-lines 高亮行）
-  show raw: set text(font: (latin, "FZXiHeiI-Z08"))
+  show raw: set text(font: font-mono, weight: weight.body)
   show raw.where(block: false): set text(size: scale.inline)
   show raw.where(block: false): box.with(
     fill: palette.code,
@@ -88,18 +94,18 @@
     inset: (x: .6em, y: .5em),
     align: left + horizon,
   )
-  show table: set text(scale.small)
-  show table.cell.where(y: 0): set text(font: font-heading, fill: palette.primary)
+  show table: set text(scale.inline)
+  show table.cell.where(y: 0): set text(weight: weight.heading, fill: palette.primary)
 
   body
 }
 
 // ---------- 小组件 ----------
-#let NixOS = text(fill: palette.primary, weight: "bold", "NixOS")
-#let Nix = text(fill: palette.primary, weight: "bold", "Nix")
+#let NixOS = text(fill: palette.primary, weight: weight.strong, "NixOS")
+#let Nix = text(fill: palette.primary, weight: weight.strong, "Nix")
 #let muted(body) = text(size: scale.small, fill: palette.muted, body)
 #let kicker(body) = text(size: scale.caption, fill: palette.muted, tracking: .08em, upper(body))
-#let hex(n) = text(features: (calt: 0), "0x" + if n < 16 { "0" } + upper(str(n, base: 16)))
+#let hex(n) = text(font: font-mono, features: (calt: 0), "0x" + if n < 16 { "0" } + upper(str(n, base: 16)))
 #let pad2(n) = if n < 10 { "0" + str(n) } else { str(n) }
 
 // 两栏：列间距统一，左右互相垂直居中
@@ -125,8 +131,7 @@
     v(.3em)
     text(
       size: scale.title,
-      font: font-heading,
-      weight: "medium",
+      weight: weight.heading,
       fill: palette.primary,
       utils.display-current-heading(level: 2),
     )
@@ -134,6 +139,7 @@
   let footer(self) = align(right, text(
     size: scale.caption,
     fill: palette.muted,
+    font: font-mono,
     context utils.slide-counter.display(pad2),
   ))
   let self = utils.merge-dicts(
@@ -161,9 +167,9 @@
   // 视觉重心略高于几何中心
   let body = align(center, block(height: 100%, stack(
     v(1fr),
-    text(scale.display, font: font-title, weight: "bold", fill: palette.primary, info.title),
-    v(1.2em),
-    text(scale.lead, font: font-title, info.subtitle),
+    text(scale.display, weight: weight.strong, fill: palette.primary, info.title),
+    v(.8em),
+    text(scale.lead, weight: weight.light, info.subtitle),
     v(3em),
     meta,
     v(1.15fr),
@@ -178,11 +184,11 @@
     let total = query(heading.where(level: 1)).filter(h => h.outlined).len()
     let n = query(heading.where(level: 1).before(here())).filter(h => h.outlined).len()
     stack(
-      text(scale.section, weight: "light", fill: palette.light, hex(n)),
+      text(scale.section, weight: weight.light, fill: palette.accent, hex(n)),
       v(.9em),
-      text(scale.title * 1.2, font: font-heading, fill: palette.primary, utils.display-current-heading(level: 1)),
+      text(scale.title * 1.2, weight: weight.heading, fill: palette.primary, utils.display-current-heading(level: 1)),
       v(1.6em),
-      text(scale.caption, fill: palette.muted, pad2(n) + " / " + pad2(total)),
+      text(scale.caption, font: font-mono, fill: palette.muted, pad2(n) + " / " + pad2(total)),
     )
   })
   self = utils.merge-dicts(self, ceremony-page)
@@ -202,7 +208,7 @@
     set par(leading: 1em)
     show raw: set text(fill: palette.light)
     show raw.where(block: false): it => it.text
-    show strong: set text(font: font-heading, fill: palette.light)
+    show strong: set text(weight: weight.strong, fill: palette.light)
     align(center + horizon, it)
   }, body)
 })
@@ -211,7 +217,7 @@
   self: self,
   header: self => pad(x: 32pt, y: 14pt, text(
     fill: palette.bg,
-    font: font-heading,
+    weight: weight.heading,
     utils.display-current-heading(depth: self.slide-level),
   )),
   header-fill: palette.primary,
