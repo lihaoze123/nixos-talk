@@ -28,25 +28,25 @@
 ]
 
 // ================================================================
-== 先问一个问题 <touying:hidden>
+== 引入 <touying:hidden>
 
 #text(scale.lead)[如果明天电脑坏了，\ 你能在一小时内把它*原样*恢复吗？]
 
-#muted[装过的软件、改过的设置、调好的输入法 —— 全部。]
+#muted[装过的软件、环境、游戏 —— 全部重新安装]
 
 #speaker-note[
   停顿三秒，让大家想一想。大多数人的答案是“不能”，最多恢复个文件。
 ]
 
-== Windows：装得上，删不掉，复刻不了
+== Windows：删不掉，难复刻，占用多
 
-#slide(composer: side(1.5fr, 1fr))[
-  - *删除难*：卸载后残留注册表、服务、驱动，流氓软件“卸了又回来” #pause
+#slide(composer: side(1fr, 1fr))[
+  - *删除难*：卸载后残留注册表、服务、驱动，新手根本删不掉流氓软件 #pause
   - *恢复难*：系统状态 = 多年点击的累积，没有任何记录 #pause
-  - *臃肿*：C盘只增不减，后台越来越多
+  - *臃肿*：Windows 空载时内存占用就已经很多
 ][
   #meanwhile
-  #placeholder(height: 9em)[截图：控制面板里卸不掉的全家桶 \ / 臃肿的C盘]
+  #image("images/windows-explorer-cloud-drives.png")
 ]
 
 #speaker-note[
@@ -79,7 +79,7 @@
   *课后* 想先体验Linux：WSL或虚拟机里装一个Ubuntu。
 ]
 
-== 但最后，都会越用越乱
+== 最后，都会越用越乱
 
 #grid(
   columns: (1fr, auto, 1fr),
@@ -112,7 +112,7 @@
 // ================================================================
 = NixOS
 
-== 声明式：整个系统写在一份文件里
+== 声明式：整个系统，一份文件
 
 #slide(composer: side(1.25fr, 1fr))[
   #code-hl(3)[```nix
@@ -213,7 +213,7 @@
   *术语* Agent：不只会聊天，还能自己执行命令、读写文件、分多步完成任务的AI，例如Claude Code、Codex。diff：两个版本之间“删了哪几行、加了哪几行”的对比。`sudo`：以管理员身份执行，权限最高，也最危险。
 ]
 
-== 我的日常：把需求或patch丢给Agent
+== 日常使用：把需求或patch丢给Agent
 
 #grid(
   columns: (1fr, auto, 1fr, auto, 1fr, auto, 1fr),
@@ -240,7 +240,7 @@
       arrow,
       step("02", "Agent动手", "nixos-config"),
       arrow,
-      step("03", "我审查diff", "jj diff"),
+      step("03", "我审查diff", "git diff"),
       arrow,
       step("04", "rebuild", "不行就回滚"),
     )
@@ -269,7 +269,7 @@
 只有用户明确要求部署时才执行，且先构建再激活。
 ```]
 
-#muted[规矩写进仓库，Agent每次开工前都会读。]
+#muted[先把规矩立住，路才能走得远。Agent 写起来不烧心。]
 
 #speaker-note[
   这是真实文件的节选。重点：边界是人定的、写成文字的，Agent在边界内自由发挥。
@@ -280,15 +280,15 @@
 // ---------------- 案例一 ----------------
 == 案例一：让Agent操作我的电脑
 
-#slide(composer: side(1.5fr, 1fr))[
-  *目标*：在Niri窗口管理器上实现Computer Use
+#slide(composer: side(1fr, 1fr))[
+  *目标*：在Niri窗口管理器上Patch代码实现Computer Use
 
   #set text(scale.small)
   + 给Niri打patch：IPC暴露窗口坐标、截图
   + patch越积越多：8个文件、1200+行
   + 整体抽成独立flake，别人也能直接复用
 ][
-  #placeholder(height: 9em)[截图：Agent正在操作窗口 \ （高亮边框 + 状态栏指示）]
+  #image("images/agent-computer-use-inkscape.png", width: 100%)
 ]
 
 #speaker-note[
@@ -327,7 +327,7 @@ programs.codexComputerUse = {
 };
 ```])
 
-#muted[1200行patch → 一个可复用的模块。任何一台NixOS都能直接开启。]
+#muted[1200行patch → 一个可复用的模块；换台机器直接复用]
 
 #speaker-note[
   讲完切去演示。先展示和Agent的对话，再展示这段配置，最后现场操作。
@@ -350,7 +350,7 @@ programs.codexComputerUse = {
 // ---------------- 案例二 ----------------
 == 案例二：让Agent写Nix包
 
-#slide(composer: side(1.5fr, 1fr))[
+#slide(composer: side(1fr, 1fr))[
   *起点*：官方只有Android APK
 
   #set text(scale.small)
@@ -358,7 +358,7 @@ programs.codexComputerUse = {
   + 解包APK，补齐Nix运行库，打小鹤双拼补丁
   + 写成Nix包：`nix profile install .#vtype-linux`
 ][
-  #placeholder(height: 9em)[截图：微信输入法在Linux上的候选框]
+  #image("images/vtype-linux-features.png", width: 100%)
 ]
 
 #speaker-note[
@@ -371,7 +371,7 @@ programs.codexComputerUse = {
 // ================================================================
 = 如何开始
 
-== 缺点？Agent恰好补上
+== 缺点？
 
 #table(
   columns: (auto, 1fr),
