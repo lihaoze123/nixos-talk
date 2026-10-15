@@ -111,6 +111,18 @@
 // 两栏：列间距统一，左右互相垂直居中
 #let side(..ratios) = grid.with(columns: ratios.pos(), column-gutter: 2em, align: left + horizon)
 
+// 截图与图注：统一编号、字号与间距，保持图片和说明在同一页
+#let captioned-image(path, caption) = {
+  show figure.caption: set text(size: scale.caption, fill: palette.muted)
+  figure(
+    image(path, width: 100%),
+    caption: caption,
+    supplement: [图],
+    numbering: "1",
+    gap: .5 * rhythm,
+  )
+}
+
 // 截图占位：现场替换为 image("...")
 #let placeholder(label, height: 100%) = block(
   width: 100%,

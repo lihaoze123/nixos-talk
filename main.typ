@@ -46,7 +46,7 @@
   - *臃肿*：Windows 空载时内存占用就已经很多
 ][
   #meanwhile
-  #image("images/windows-explorer-cloud-drives.png")
+  #captioned-image("images/windows-explorer-cloud-drives.png")[资源管理器中被软件添加的网盘与视频入口]
 ]
 
 #speaker-note[
@@ -288,7 +288,7 @@
   + patch越积越多：8个文件、1200+行
   + 整体抽成独立flake，别人也能直接复用
 ][
-  #image("images/agent-computer-use-inkscape.png", width: 100%)
+  #captioned-image("images/agent-computer-use-inkscape.png")[Agent操作Inkscape绘制笑脸]
 ]
 
 #speaker-note[
@@ -358,7 +358,7 @@ programs.codexComputerUse = {
   + 解包APK，补齐Nix运行库，打小鹤双拼补丁
   + 写成Nix包：`nix profile install .#vtype-linux`
 ][
-  #image("images/vtype-linux-features.png", width: 100%)
+  #captioned-image("images/vtype-linux-features.png")[移植后的输入法功能示例：整句、云候选与纠错等]
 ]
 
 #speaker-note[
