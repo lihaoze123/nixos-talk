@@ -368,6 +368,47 @@ programs.codexComputerUse = {
   *术语* APK：Android安装包。NDK：Android原生开发工具包。bionic：Android自己的C运行库，桌面Linux用的是glibc，两者不兼容，所以要把bionic一起带上。小鹤双拼：一种双拼输入方案。
 ]
 
+// ---------------- 案例三 ----------------
+== 案例三：日常的真实用例
+
+#slide(composer: side(1.1fr, 1fr))[
+  #muted[就在讲座当天]
+
+  *目标*：云服务器Ubuntu → #NixOS
+
+  #text(scale.small)[
+    + 远程整盘重装，分区也是代码
+    + 上线网盘Cloudreve、剪贴板wastebin
+    + ONLYOFFICE、Nextcloud：装上又删掉，不留残渣
+  ]
+][
+  #text(scale.small)[```
+  feat(vps): 添加ARM VPS配置与远程部署
+  feat(vps): 启用Docker与用户服务持久运行
+  feat(cli): 启用Cloudflare官方cf命令行工具
+  feat(vps): 部署Cloudreve并配置域名与HTTPS
+  feat(vps): 部署wastebin并配置HTTPS与请求限流
+  ```]
+]
+
+#speaker-note[
+  这是我今天刚做完的事，右边是今天真实的提交记录。
+
+  顺带提几件没写上去的：云盘扩容到150 GB后整盘重装；打通IPv6；云端防火墙全放行，端口由NixOS自己的防火墙管；Docker装了系统级和rootless两套；cf命令行工具是让Agent现场打包的。
+
+  重点在第三条：ONLYOFFICE常驻约11 GiB内存，验收完决定不要；Nextcloud也换成了Cloudreve。删掉几行配置、重建、垃圾回收，释放约6.3 GiB，系统里什么都没留下。装了又删得干净，这就是NixOS的理念：系统只是配置的结果。
+
+  *术语* nixos-anywhere / disko：通过SSH把远程机器整盘装成NixOS的工具，disko负责把分区方案写成代码。ragenix：把密码加密后放进仓库的工具。垃圾回收：删掉不再被任何配置引用的软件包。
+]
+
+#focus-slide[
+  #text(scale.body / scale.lead * 1em, captioned-image("images/nixos-rebuild-nom.png", height: 90%, fill: palette.bg)[重建笔记本系统：nix-output-monitor实时显示的依赖树])
+]
+
+#speaker-note[
+  不用讲解，停留几秒让大家看重建时的样子，然后翻页。
+]
+
 // ================================================================
 = 如何开始
 

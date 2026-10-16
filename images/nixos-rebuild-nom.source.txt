@@ -1,0 +1,2 @@
+来源：chumeng 本机终端截图，2026-10-16 重建笔记本系统（nixos-system-laptop）时 nix-output-monitor 的输出，正在构建刚接入的 Cloudflare cf CLI。
+处理：原图保存，未裁剪、未重绘。

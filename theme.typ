@@ -112,10 +112,11 @@
 #let side(..ratios) = grid.with(columns: ratios.pos(), column-gutter: 2em, align: left + horizon)
 
 // 截图与图注：统一编号、字号与间距，保持图片和说明在同一页
-#let captioned-image(path, caption) = {
-  show figure.caption: set text(size: scale.caption, fill: palette.muted)
+// 深色页传入 fill 改图注颜色；整页大图传入 height，按高度约束防止溢出
+#let captioned-image(path, caption, height: auto, fill: palette.muted) = {
+  show figure.caption: set text(size: scale.caption, fill: fill)
   figure(
-    image(path, width: 100%),
+    if height == auto { image(path, width: 100%) } else { image(path, height: height) },
     caption: caption,
     supplement: [图],
     numbering: "1",
