@@ -1,4 +1,10 @@
 #import "theme.typ": *
+#import "pronunciations.typ": pronunciations
+
+// 仅放入 speaker-note；放映版和阅读版不会显示读音表。
+#let readings(..terms) = reading-guide(
+  terms.pos().dedup().map(term => (term, ..pronunciations.at(term))),
+)
 
 // 编译模式见 justfile：--input presenter=true 演讲者版（右半为备注），--input handout=true 阅读版（合并 #pause）
 #let presenter = sys.inputs.at("presenter", default: "false") == "true"
@@ -25,6 +31,8 @@
   自我介绍一句。今天不教命令，只讲一个想法：当整个操作系统变成一份代码，AI就能替你维护它。
 
   开场提醒：会后分发PDF阅读版，链接都能点，不用拍照。
+
+  #readings("NixOS", "AI", "Agentic", "Linux", "PDF")
 ]
 
 // ================================================================
@@ -54,10 +62,16 @@
   这两件事本质是同一个问题：系统的“状态”没有被记录下来。
 
   *术语* 注册表：Windows存放系统与软件设置的大数据库，卸载程序常常不清理自己写进去的条目。
+
+  #readings("Windows")
 ]
 
 // ================================================================
 = Linux与发行版
+
+#speaker-note[
+  #readings("Linux")
+]
 
 == Linux发行版 = 内核 + 包管理 + 一套默认选择
 
@@ -77,6 +91,8 @@
   *术语* 发行版：同一个Linux内核，配上不同的软件集合、包管理器和默认设置。包管理器：命令行里的“应用商店”，负责装、升、卸软件。滚动更新：没有大版本，软件出新版就推送。
 
   *课后* 想先体验Linux：WSL或虚拟机里装一个Ubuntu。
+
+  #readings("Linux", "Ubuntu", "Debian", "Arch", "NixOS", "apt", "pacman", "AUR", "Nix", "WSL")
 ]
 
 == 最后，都会越用越乱
@@ -107,10 +123,16 @@
   所以不只是Windows，Linux一样会乱。过渡：有没有一个系统，把状态本身写下来？
 
   *术语* `/etc`：Linux放系统配置文件的目录。`curl ... | sh`：下载脚本直接执行，方便，但它改了什么没人知道。
+
+  #readings("Linux", "Windows", "sudo", "apt", "install", "Vim", "/etc", "curl", "sh", "pip", "user")
 ]
 
 // ================================================================
 = NixOS
+
+#speaker-note[
+  #readings("NixOS")
+]
 
 == 声明式：整个系统，一份文件
 
@@ -138,6 +160,8 @@
   *术语* 命令式像给司机逐条指路，声明式像在导航里直接输入目的地。`nixos-rebuild switch`：读取配置，构建出新系统并切换过去。
 
   *课后* 在search.nixos.org的Options里搜openssh，看看一个服务有多少开关。
+
+  #readings("NixOS", "Nix", "OpenSSH", "Niri", "Fcitx5", "Git", "Firefox", "nixos-rebuild", "switch", "Options")
 ]
 
 == 可复现：同一份代码，同一个系统
@@ -149,6 +173,8 @@
   *术语* 哈希：把任意内容压成一串固定长度的“指纹”，输入差一点，指纹就完全不同。flake：Nix项目的标准格式，`flake.nix` 写依赖与输出，`flake.lock` 把每个依赖钉在确切版本，类似 `package-lock.json`。
 
   *课后* Nix Pills前几章讲store的原理。
+
+  #readings("NixOS", "Nix", "hash", "flake / Flakes", "flake.nix", "flake.lock", "package-lock.json", "Nix Pills", "store", "Firefox", "Git", "clone")
 ]
 
 - `/nix/store/<hash>-firefox-131.0`：每个包按*全部输入*的哈希存放，互不干扰，多版本共存 #pause
@@ -178,10 +204,16 @@
   这一点是后面Agent部分的伏笔：有了回滚，“让别人动我的系统”就不再可怕。
 
   *术语* 代际（generation）：每次rebuild产生的一个完整系统版本，启动菜单里每一项就是一代。原子：要么整体切换成功，要么保持原样，不会停在“装了一半”。旧代际占磁盘，用 `nix-collect-garbage` 清理。
+
+  #readings("NixOS", "Agent", "generation", "current", "rebuild", "nixos-rebuild", "switch", "rollback", "nix-collect-garbage")
 ]
 
 // ================================================================
 = Agentic OS
+
+#speaker-note[
+  #readings("Agentic", "OS")
+]
 
 #focus-slide[
   在NixOS里，*整个系统就是一份代码*。
@@ -191,6 +223,8 @@
 
 #speaker-note[
   全场核心论点。慢慢讲，讲完停一下。
+
+  #readings("Agentic", "OS", "NixOS", "AI", "Agent")
 ]
 
 == 为什么NixOS天然适合交给Agent
@@ -211,6 +245,8 @@
   三个关键词：文本、可审查、可回滚。合起来就是“安全地把系统交给Agent”。
 
   *术语* Agent：不只会聊天，还能自己执行命令、读写文件、分多步完成任务的AI，例如Claude Code、Codex。diff：两个版本之间“删了哪几行、加了哪几行”的对比。`sudo`：以管理员身份执行，权限最高，也最危险。
+
+  #readings("Agentic", "OS", "NixOS", "Agent", "AI", "sudo", "shell", "diff", "Git", "pull", "rebuild", "Claude Code", "Codex")
 ]
 
 == 日常使用：把需求或patch丢给Agent
@@ -256,6 +292,8 @@
   *术语* patch（补丁）：描述“在哪个文件改哪几行”的文本，可以直接应用到源码上。jj（Jujutsu）：与Git兼容的版本管理工具，记录仓库的每一次修改。
 
   *课后* 没用过Git的同学先学Git，它是程序员最重要的工具之一。
+
+  #readings("Agentic", "OS", "Agent", "patch", "nixos-config", "diff", "Git", "rebuild", "jj", "Jujutsu")
 ]
 
 == AGENTS.md：写给Agent的系统手册
@@ -275,6 +313,8 @@
   这是真实文件的节选。重点：边界是人定的、写成文字的，Agent在边界内自由发挥。
 
   *术语* AGENTS.md：放在仓库根目录、写给AI看的说明书，许多Agent工具开工前会自动读取（agents.md）。“先构建再激活”：先确认新系统能构建出来，再切换过去。
+
+  #readings("Agentic", "OS", "AGENTS.md", "Agent", "AI")
 ]
 
 // ---------------- 案例一 ----------------
@@ -295,6 +335,8 @@
   这是Agent改“系统本身”，而不是在系统上跑个程序。窗口管理器是桌面最底层的组件之一。
 
   *术语* 窗口管理器：决定窗口摆在哪、多大、怎么切换的程序；Niri是可横向滚动的平铺式窗口管理器。Computer Use：让AI看截图、动鼠标、敲键盘，像人一样操作电脑。IPC：进程间通信，这里指别的程序向Niri询问“窗口在哪”的接口。
+
+  #readings("Agentic", "OS", "Agent", "AI", "Niri", "patch", "Computer Use", "IPC", "flake / Flakes", "Inkscape")
 ]
 
 == 上游没有的功能，patch一下
@@ -315,6 +357,8 @@
   不用看懂Rust。要点：上游不支持的东西，在NixOS里可以用一个patch文件声明式地加上，而且这个patch是Agent写的。
 
   高亮的几行是新增内容：给每个窗口多报告一个“在当前屏幕上的位置”。上游（upstream）：软件的原作者与官方仓库。
+
+  #readings("Agentic", "OS", "patch", "Agent", "Niri", "Rust", "NixOS", "upstream")
 ]
 
 == 最后，只剩几行配置
@@ -333,6 +377,8 @@ programs.codexComputerUse = {
   讲完切去演示。先展示和Agent的对话，再展示这段配置，最后现场操作。
 
   *术语* 模块：NixOS把一组配置打包成开关的方式，`enable = true` 就是打开开关。`inputs`：flake引入的外部依赖，这里就是抽出来的那个flake。
+
+  #readings("Agentic", "OS", "Agent", "NixOS", "Codex", "Computer Use", "patch", "enable", "true", "inputs", "flake / Flakes")
 ]
 
 #focus-slide[
@@ -345,6 +391,8 @@ programs.codexComputerUse = {
   Niri切到演示workspace；OBS动态投屏目标切到该输出。
   顺序：① 对话记录 ② jj diff / 配置 ③ 现场下达任务。
   任务提示词提前写好，直接粘贴。出问题就说“结束后再演示”，直接翻页，不要恋战。
+
+  #readings("Agentic", "OS", "live demo", "Agent", "Niri", "workspace", "OBS", "jj", "diff")
 ]
 
 // ---------------- 案例二 ----------------
@@ -366,6 +414,8 @@ programs.codexComputerUse = {
   在NixOS + Agent的组合下，逆向和打包的成本降到了一次对话；打包结果是代码，可以复用、可以分享。
 
   *术语* APK：Android安装包。NDK：Android原生开发工具包。bionic：Android自己的C运行库，桌面Linux用的是glibc，两者不兼容，所以要把bionic一起带上。小鹤双拼：一种双拼输入方案。
+
+  #readings("Agentic", "OS", "Agent", "Nix", "NixOS", "Linux", "Android", "APK", "NDK", "bionic", "C", "glibc", "profile", "install", "vtype-linux")
 ]
 
 // ---------------- 案例三 ----------------
@@ -399,6 +449,8 @@ programs.codexComputerUse = {
   重点在第三条：ONLYOFFICE常驻约11 GiB内存，验收完决定不要；Nextcloud也换成了Cloudreve。删掉几行配置、重建、垃圾回收，释放约6.3 GiB，系统里什么都没留下。装了又删得干净，这就是NixOS的理念：系统只是配置的结果。
 
   *术语* nixos-anywhere / disko：通过SSH把远程机器整盘装成NixOS的工具，disko负责把分区方案写成代码。ragenix：把密码加密后放进仓库的工具。垃圾回收：删掉不再被任何配置引用的软件包。
+
+  #readings("Agentic", "OS", "Ubuntu", "NixOS", "Cloudreve", "wastebin", "ONLYOFFICE", "Nextcloud", "ARM", "VPS", "Docker", "CLI", "Cloudflare", "cf", "HTTPS", "GB", "GiB", "IPv6", "rootless", "Agent", "nixos-anywhere", "disko", "SSH", "ragenix")
 ]
 
 #focus-slide[
@@ -407,6 +459,8 @@ programs.codexComputerUse = {
 
 #speaker-note[
   不用讲解，停留几秒让大家看重建时的样子，然后翻页。
+
+  #readings("Agentic", "OS", "nix-output-monitor")
 ]
 
 // ================================================================
@@ -428,6 +482,8 @@ programs.codexComputerUse = {
   NixOS和Agent是互补的。
 
   *课后* 遇到报错，把完整报错贴给Agent，让它先解释原因，再给修复 —— 这样每次都能学到东西。
+
+  #readings("NixOS", "Nix", "Agent", "nixpkgs")
 ]
 
 == 迈出第一步
@@ -443,6 +499,8 @@ programs.codexComputerUse = {
   Nix包管理器可以单独装在现有Linux / macOS上，不影响原系统。虚拟机：在电脑里模拟一台电脑，玩坏了删掉即可，例如VirtualBox、GNOME Boxes。
 
   *课后路线* 读《NixOS与Flakes》前几章 → 虚拟机装NixOS → 配置放进Git仓库 → 让Agent加功能，每次都看diff。
+
+  #readings("Linux", "macOS", "Nix", "NixOS", "Agent", "VirtualBox", "GNOME Boxes", "flake / Flakes", "Git", "diff")
 ]
 
 == 回顾
@@ -456,6 +514,8 @@ programs.codexComputerUse = {
 #speaker-note[
   回扣开场：电脑坏了，一小时内原样恢复？在NixOS上，`git clone` 加一条命令就够了。
   三句话对应三个部分，念完停一下，再进入参考资料。
+
+  #readings("Agent", "NixOS", "Git", "clone")
 ]
 
 == 参考资料
@@ -500,6 +560,8 @@ programs.codexComputerUse = {
 
 #speaker-note[
   不用念，告诉大家会后会分发PDF，链接都可以点。推荐新手从第一本中文书开始。
+
+  #readings("PDF", "NixOS", "flake / Flakes", "Zero to Nix", "nix.dev", "NixOS Search", "NixOS Manual", "NixOS Wiki", "Nix Pills", "Niri", "AGENTS.md", "Agent", "Typst", "Touying")
 ]
 
 #focus-slide[
@@ -513,4 +575,6 @@ programs.codexComputerUse = {
   能玩游戏吗 —— Steam一行 `programs.steam.enable` 即可；
   和Docker的区别 —— Docker隔离单个应用，NixOS管理整个系统；
   Agent改坏了怎么办 —— 先审diff，真坏了就回滚。
+
+  #readings("Thanks", "nixos-rebuild", "switch", "flake / Flakes", "future", "Steam", "enable", "Docker", "NixOS", "Agent", "diff")
 ]

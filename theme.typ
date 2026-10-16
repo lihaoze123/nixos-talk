@@ -108,6 +108,30 @@
 #let hex(n) = text(font: font-mono, features: (calt: 0), "0x" + if n < 16 { "0" } + upper(str(n, base: 16)))
 #let pad2(n) = if n < 10 { "0" + str(n) } else { str(n) }
 
+// 演讲者读音表：数据与逐页选词在正文维护，排版只在主题维护。
+// IPA 单独使用系统字体，避免 Inter 未覆盖的音标落入中文字体。
+#let reading-guide(entries) = block(above: .65 * rhythm, {
+  set text(size: scale.caption)
+  set par(leading: .35em, spacing: .3 * rhythm)
+  text(weight: weight.heading, fill: palette.primary)[本页读音]
+  h(.6em)
+  text(fill: palette.muted)[大写为重读；†为建议读法]
+  v(.35 * rhythm)
+  grid(
+    columns: if entries.len() > 18 { (1fr, 1fr, 1fr) } else { (1fr, 1fr) },
+    column-gutter: rhythm,
+    row-gutter: .35 * rhythm,
+    ..entries.map(entry => block(breakable: false, {
+      text(weight: weight.heading, entry.at(0))
+      if entry.len() > 3 { [†] }
+      h(.4em)
+      text(font: "DejaVu Sans", "/" + entry.at(1) + "/")
+      linebreak()
+      text(fill: palette.muted, entry.at(2))
+    })),
+  )
+})
+
 // 两栏：列间距统一，左右互相垂直居中
 #let side(..ratios) = grid.with(columns: ratios.pos(), column-gutter: 2em, align: left + horizon)
 
@@ -193,6 +217,7 @@
 
 // 章节页：居中对称，只有极客风编号 0x02 与章节名
 #let new-section-slide(config: (:), body) = touying-slide-wrapper(self => {
+  let section-content = body
   let body = align(center + horizon, context {
     let n = query(heading.where(level: 1).before(here())).filter(h => h.outlined).len()
     stack(
@@ -202,7 +227,7 @@
     )
   })
   self = utils.merge-dicts(self, ceremony-page)
-  touying-slide(self: self, config: config, body)
+  touying-slide(self: self, config: config, body + section-content)
 })
 
 // 深色强调页：核心论点、Live Demo、Thanks，居中对称
@@ -234,8 +259,27 @@
   fill: palette.bg,
   note-setting: note => pad(x: 40pt, y: 8pt, {
     set text(size: 20pt, font: font-body, fill: palette.ink)
-    set par(leading: 1em)
-    note
+    set par(leading: .5em, spacing: .65 * rhythm)
+    // 按可用高度选择字号并重新换行，始终用满备注区宽度。
+    // 不做整块几何缩放，否则长备注会挤成狭窄的小字。
+    block(height: 1fr, layout(size => {
+      let sized-note(ratio) = text(size: 20pt * ratio, block(width: size.width, note))
+      let ratio = 1.0
+      if measure(sized-note(ratio)).height > size.height {
+        let lower = .5
+        let upper = 1.0
+        for _ in range(8) {
+          let middle = (lower + upper) / 2
+          if measure(sized-note(middle)).height <= size.height {
+            lower = middle
+          } else {
+            upper = middle
+          }
+        }
+        ratio = lower
+      }
+      sized-note(ratio)
+    }))
   }),
   ..args,
 )
